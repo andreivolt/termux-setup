@@ -1,0 +1,10 @@
+#!/bin/bash
+
+ssh-keygen -A
+
+cat > $PREFIX/etc/ssh/sshd_config.d/auth.conf << 'SSH_CONFIG'
+PasswordAuthentication no
+SSH_CONFIG
+
+sv-enable sshd
+sv up sshd
