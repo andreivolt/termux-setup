@@ -6,5 +6,7 @@ cat > $PREFIX/etc/ssh/sshd_config.d/auth.conf << 'SSH_CONFIG'
 PasswordAuthentication no
 SSH_CONFIG
 
+pkg install termux-services
+
 sv-enable sshd
 sv up sshd

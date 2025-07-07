@@ -4,9 +4,10 @@ ssh-copy-id $TERMUX_HOST
 
 cat packages.txt | ssh $TERMUX_HOST "pkg update -y && cat | xargs pkg install -y"
 
+ssh $TERMUX_HOST "pkg install -y zsh && chsh -s zsh"
+
 for script in scripts/*; do
     cat "$script" | ssh $TERMUX_HOST
 done
 
-scp termux.properties $TERMUX_HOST:~/.termux/
-scp sshd_boot.sh $TERMUX_HOST:~/.termux/boot/start-sshd.sh
+rsync -av .termux/ $TERMUX_HOST:~/.termux/
