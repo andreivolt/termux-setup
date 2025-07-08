@@ -1,13 +1,18 @@
 #!/bin/bash
 
-ssh-copy-id $TERMUX_HOST
+pkg update -y
 
-cat packages.txt | ssh $TERMUX_HOST "pkg update -y && cat | xargs pkg install -y"
+xargs -a packages.txt pkg install -y
 
-ssh $TERMUX_HOST "pkg install -y zsh && chsh -s zsh"
+pkg install -y zsh && chsh -s zsh
 
-for script in scripts/*; do
-    cat "$script" | ssh $TERMUX_HOST
-done
+ssh-keygen -A
 
-rsync -av .termux/ $TERMUX_HOST:~/.termux/
+cat > $PREFIX/etc/ssh/sshd_config.d/auth.conf << 'SSH_CONFIG'
+PasswordAuthentication no
+SSH_CONFIG
+
+pkg install termux-services
+
+sv-enable sshd
+sv up sshd

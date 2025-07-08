@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+STATE_FILE="$HOME/.local/state/termux-packages.txt"
+PACKAGES_FILE="packages.txt"
+
+[ -z "$TERMUX_HOST" ] && { echo "Error: TERMUX_HOST not set" >&2; exit 1; }
+
+mkdir -p "$(dirname "$STATE_FILE")"
+
+ssh "$TERMUX_HOST" "pkg list-installed | grep -v automatic | cut -d/ -f1" | sort > "$STATE_FILE.new"
+
+if [ -f "$STATE_FILE" ]; then
+    NEW_PKGS=$(comm -13 "$STATE_FILE" "$STATE_FILE.new")
+else
+    NEW_PKGS=$(cat "$STATE_FILE.new")
+fi
+
+if [ -n "$NEW_PKGS" ]; then
+    if [ -f "$PACKAGES_FILE" ]; then
+        echo "$NEW_PKGS" | comm -23 - <(sort "$PACKAGES_FILE") | cat - "$PACKAGES_FILE" | sort > "$PACKAGES_FILE.tmp"
+        mv "$PACKAGES_FILE.tmp" "$PACKAGES_FILE"
+    else
+        echo "$NEW_PKGS" > "$PACKAGES_FILE"
+    fi
+
+    echo "Added $(echo "$NEW_PKGS" | wc -l | tr -d ' ') new package(s):"
+    echo "$NEW_PKGS" | sed 's/^/  + /'
+fi
+
+mv "$STATE_FILE.new" "$STATE_FILE"

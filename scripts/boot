@@ -1,4 +1,0 @@
-#!/bin/bash
-
-mkdir -p ~/.termux/boot/
-chmod +x ~/.termux/boot/start-sshd.sh
