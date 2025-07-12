@@ -12,8 +12,10 @@ ssh "$TERMUX_HOST" "pkg list-installed | grep -v automatic | cut -d/ -f1" | sort
 
 if [ -f "$STATE_FILE" ]; then
     NEW_PKGS=$(comm -13 "$STATE_FILE" "$STATE_FILE.new")
+    REMOVED_PKGS=$(comm -23 "$STATE_FILE" "$STATE_FILE.new")
 else
     NEW_PKGS=$(cat "$STATE_FILE.new")
+    REMOVED_PKGS=""
 fi
 
 if [ -n "$NEW_PKGS" ]; then
@@ -26,6 +28,15 @@ if [ -n "$NEW_PKGS" ]; then
 
     echo "Added $(echo "$NEW_PKGS" | wc -l | tr -d ' ') new package(s):"
     echo "$NEW_PKGS" | sed 's/^/  + /'
+fi
+
+if [ -n "$REMOVED_PKGS" ] && [ -f "$PACKAGES_FILE" ]; then
+    echo "$REMOVED_PKGS" | while read -r pkg; do
+        sed -i '' "/^$pkg$/d" "$PACKAGES_FILE"
+    done
+
+    echo "Removed $(echo "$REMOVED_PKGS" | wc -l | tr -d ' ') package(s):"
+    echo "$REMOVED_PKGS" | sed 's/^/  - /'
 fi
 
 mv "$STATE_FILE.new" "$STATE_FILE"

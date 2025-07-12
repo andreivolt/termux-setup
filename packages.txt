@@ -2,10 +2,12 @@ asciinema
 autossh
 bat
 carapace
+cloudflared
 cmake
 curl
 darkhttpd
 dash
+deno
 dnsutils
 doctl
 eza
@@ -16,8 +18,10 @@ gh
 git
 git-delta
 gnupg
+gojq
 google-cloud-sdk
 gpgv
+hyperfine
 imagemagick
 jq
 less
@@ -34,6 +38,7 @@ nodejs
 openssh
 parallel
 pnpm
+poppler
 portaudio
 proot-distro
 python
@@ -52,6 +57,7 @@ unzip
 util-linux
 uv
 vim
+watchexec
 whois
 xh
 zsh
